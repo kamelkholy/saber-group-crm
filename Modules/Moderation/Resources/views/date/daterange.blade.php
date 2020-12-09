@@ -60,6 +60,41 @@
 
                                         
                                             </div>
+                                            <div class = "row">
+    <div class="container">
+        <div class="row" style="align-items: baseline;">
+            <h6 class="col-sm-2">Cities Filter :</h6>
+            <div class="col-md-10">
+            <div class="row">
+            @foreach($citiesf as $city)
+            <div class="col-sm-2 form-check-inline">
+            <label class="form-check-label" for="{{$city->city_id}}">
+            <input class="form-check-input" type="checkbox" name="city[]" value="{{$city->city_id}}" id="city_{{$city->city_id}}">{{$city->city_name}}
+            </label>
+            </div> 
+            @endforeach
+            </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row" style="align-items: baseline;">
+        <h6 class="col-sm-2">Categories Filter :</h6>
+        <div class="col-md-10">
+        <div class="row">
+        @foreach($ccf as $cc)
+        <div class="col-sm-2 form-check-inline">
+        <label class="form-check-label" for="{{$cc->client_categories_id}}">
+        <input class="form-check-input" type="checkbox" name="cc[]" value="{{$cc->client_categories_id}}" id="cc_{{$cc->client_categories_id}}">{{$cc->client_categories_name}}
+        </label>
+        </div> 
+        @endforeach
+        </div>
+        </div>
+        </div>
+    </div>
+                                            </div>
                                             <button  class="btn btn-primary waves-effect waves-light">
                                                             Show Report
                                                         </button>

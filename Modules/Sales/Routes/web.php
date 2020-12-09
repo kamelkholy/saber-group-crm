@@ -13,6 +13,7 @@
 
 Route::prefix('sales')->group(function() {
     Route::get('/', 'SalesController@saleshome')->middleware('Sales');
+    Route::post('/filter', 'SalesController@filter')->middleware('Sales');
     //reports
     Route::get('/gettodayreport', 'SalesController@gettodayreport')->middleware('Sales');
     Route::get('/getcurrentmonth', 'SalesController@getcurrentmonth')->middleware('Sales');

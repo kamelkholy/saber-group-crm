@@ -13,12 +13,14 @@
 
 Route::prefix('moderation')->group(function() {
     Route::get('/', 'ModerationController@home')->middleware('Moderation');
+    // Route::get('/msg', 'ModerationController@sendMsg');
 
 
     //leads
     Route::get('/addnewlead', 'ModerationController@addnewlead')->middleware('Moderation');
     Route::post('/addnewlead_store', 'ModerationController@addnewlead_store')->middleware('Moderation');
     Route::get('/manageleads', 'ModerationController@manageleads')->middleware('Moderation');
+    Route::post('/filter', 'ModerationController@filter')->middleware('Moderation');
     Route::get('/deletecustomer/{customer_id}', 'ModerationController@deletecustomer')->middleware('Moderation');
     Route::get('/checknumber_lead/{number}', 'ModerationController@checknumber_lead')->middleware('Moderation');
     Route::get('/updatelead/{customer_id}', 'ModerationController@updatelead')->middleware('Moderation');

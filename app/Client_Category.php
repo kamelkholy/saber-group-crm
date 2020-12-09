@@ -42,4 +42,14 @@ class Client_Category extends Model
 
         return $cat;
     }
+    public function getcat()
+    {
+        $cat = DB::select('
+            SELECT 
+                client_categories_id,client_categories_name
+            FROM client_categories
+            ');
+
+        return $cat;
+    }
 }

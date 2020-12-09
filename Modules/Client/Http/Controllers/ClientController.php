@@ -9,11 +9,23 @@ use Illuminate\Routing\Controller;
 use App\User;
 use App\Customer;
 use App\Client;
+use App\Client_Category;
+use App\City;
 use Auth;
 
 class ClientController extends Controller
 {
-    
+    public function filter(Request $request)
+    {
+
+        $input = $request->all();
+
+        $input['city'] = $request->input('city');
+        $input['client'] = $request->input('client');
+        $input['cc'] = $request->input('cc');
+
+        return redirect($request->query('back').'?city='.json_encode($input['city']).'&client='.json_encode($input['client']).'&category='.json_encode($input['cc']))->withInput($request->all());;
+    }
     public function home()
     {
         $getclientid = new Client;
@@ -52,7 +64,7 @@ class ClientController extends Controller
     }
 
     //today reports
-    public function gettodayreport()
+    public function gettodayreport(Request $request)
     {
         $getclientid = new Client;
         $getclientid = $getclientid->getclient(Auth::user()->id);
@@ -65,19 +77,35 @@ class ClientController extends Controller
 
         $date = date('Y-m-d');
 
+        $filter = array([]);
+        $filter['city'] = json_decode($request->query('city'));
+        $filter['client'] = json_decode($request->query('client'));
+        $filter['category'] = json_decode($request->query('category'));
+        $cityM = new City;
+        $clientM = new Client;
+        $ccM = new Client_Category;
+        $citiesf = $cityM->getcity();
+        $clientsf = [];
+        $ccf = NULL;
+        $ccf = $ccM->getclientcat($client);
 
         $getlead = new Customer;
-        $records = $getlead->getlead_client($client,$date);
+        $records = $getlead->getlead_client($client,$date, $filter);
 
 
         return view('client::today.todayreport', [
             'data' => $records,
             'urls' => array(
+                'filter' => '/client/gettodayreport',
+                'module' => '/client',
             ),
+            'citiesf' => $citiesf,
+            'clientsf' => $clientsf,
+            'ccf' => $ccf,
         ]);
     }
 
-    public function getcurrentmonth()
+    public function getcurrentmonth(Request $request)
     {
         $getclientid = new Client;
         $getclientid = $getclientid->getclient(Auth::user()->id);
@@ -92,19 +120,36 @@ class ClientController extends Controller
 
         $year = date('Y');
 
+        $filter = array([]);
+        $filter['city'] = json_decode($request->query('city'));
+        $filter['client'] = json_decode($request->query('client'));
+        $filter['category'] = json_decode($request->query('category'));
+        $cityM = new City;
+        $clientM = new Client;
+        $ccM = new Client_Category;
+        $citiesf = $cityM->getcity();
+        $clientsf = [];
+        $ccf = NULL;
+        $ccf = $ccM->getclientcat($client);
+
 
         $getlead = new Customer;
-        $records = $getlead->getlead_client_month($client,$month,$year);
+        $records = $getlead->getlead_client_month($client,$month,$year, $filter);
 
 
         return view('client::today.currentmonth', [
             'data' => $records,
             'urls' => array(
+                'filter' => '/client/getcurrentmonth',
+                'module' => '/client',
             ),
+            'citiesf' => $citiesf,
+            'clientsf' => $clientsf,
+            'ccf' => $ccf,
         ]);
     }
 
-    public function getcurrentyear()
+    public function getcurrentyear(Request $request)
     {
         $getclientid = new Client;
         $getclientid = $getclientid->getclient(Auth::user()->id);
@@ -117,19 +162,36 @@ class ClientController extends Controller
 
         $year = date('Y');
 
+        $filter = array([]);
+        $filter['city'] = json_decode($request->query('city'));
+        $filter['client'] = json_decode($request->query('client'));
+        $filter['category'] = json_decode($request->query('category'));
+        $cityM = new City;
+        $clientM = new Client;
+        $ccM = new Client_Category;
+        $citiesf = $cityM->getcity();
+        $clientsf = [];
+        $ccf = NULL;
+        $ccf = $ccM->getclientcat($client);
+
 
         $getlead = new Customer;
-        $records = $getlead->getlead_client_year($client,$year);
+        $records = $getlead->getlead_client_year($client,$year, $filter);
 
 
         return view('client::today.currentyear', [
             'data' => $records,
             'urls' => array(
+                'filter' => '/client/getcurrentyear',
+                'module' => '/client',
             ),
+            'citiesf' => $citiesf,
+            'clientsf' => $clientsf,
+            'ccf' => $ccf,
         ]);
     }
 
-    public function allleads()
+    public function allleads(Request $request)
     {
         $getclientid = new Client;
         $getclientid = $getclientid->getclient(Auth::user()->id);
@@ -140,15 +202,32 @@ class ClientController extends Controller
             
         }
 
+        $filter = array([]);
+        $filter['city'] = json_decode($request->query('city'));
+        $filter['client'] = json_decode($request->query('client'));
+        $filter['category'] = json_decode($request->query('category'));
+        $cityM = new City;
+        $clientM = new Client;
+        $ccM = new Client_Category;
+        $citiesf = $cityM->getcity();
+        $clientsf = [];
+        $ccf = NULL;
+        $ccf = $ccM->getclientcat($client);
+
 
         $getlead = new Customer;
-        $records = $getlead->getlead_client_all($client);
+        $records = $getlead->getlead_client_all($client, $filter);
 
 
         return view('client::today.allleads', [
             'data' => $records,
             'urls' => array(
+                'filter' => '/client/allleads',
+                'module' => '/client',
             ),
+            'citiesf' => $citiesf,
+            'clientsf' => $clientsf,
+            'ccf' => $ccf,
         ]);
     }
 
@@ -156,13 +235,39 @@ class ClientController extends Controller
     //get month Report
     public function monthlyreport_main()
     {
-        return view('client::monthly.monthlymain');
+        $getclientid = new Client;
+        $getclientid = $getclientid->getclient(Auth::user()->id);
+
+        foreach ($getclientid as $getclientid) {
+
+            $client = $getclientid->client_id;
+            
+        }
+
+        $cityM = new City;
+        $clientM = new Client;
+        $ccM = new Client_Category;
+        $citiesf = $cityM->getcity();
+        $clientsf = $clientM->getclients_view();
+        $ccf = $ccM->getclientcat($client);
+
+        return view('client::monthly.monthlymain',[
+            'citiesf' => $citiesf,
+            'clientsf' => $clientsf,
+            'ccf' => $ccf,
+        ]);
     }
 
     public function getmonrhlyreport(Request $request)
     {
         $month = $request->input('var1');
         $year = $request->input('var2');
+
+        $cityf = $request->input('city');
+        $ccf = $request->input('cc');
+        $filter = array([]);
+        $filter['city'] = $request->input('city');
+        $filter['category'] = $request->input('cc');
 
         $getclientid = new Client;
         $getclientid = $getclientid->getclient(Auth::user()->id);
@@ -174,7 +279,7 @@ class ClientController extends Controller
         }
 
         $getlead = new Customer;
-        $records = $getlead->getleadmonthlyreport($client,$month,$year);
+        $records = $getlead->getleadmonthlyreport($client,$month,$year, $filter);
         return view('client::monthly.monthlyreport', [
             'data' => $records,
             'urls' => array(
@@ -184,13 +289,38 @@ class ClientController extends Controller
 
     public function datemain()
     {
-        return view('client::date.datemain');
+        $getclientid = new Client;
+        $getclientid = $getclientid->getclient(Auth::user()->id);
+
+        foreach ($getclientid as $getclientid) {
+
+            $client = $getclientid->client_id;
+            
+        }
+
+        $cityM = new City;
+        $clientM = new Client;
+        $ccM = new Client_Category;
+        $citiesf = $cityM->getcity();
+        $clientsf = $clientM->getclients_view();
+        $ccf = $ccM->getclientcat($client);
+
+        return view('client::date.datemain',[
+            'citiesf' => $citiesf,
+            'clientsf' => $clientsf,
+            'ccf' => $ccf,
+        ]);
     }
 
     public function datemain_get(Request $request)
     {
         $date = $request->input('var1');
 
+        $cityf = $request->input('city');
+        $ccf = $request->input('cc');
+        $filter = array([]);
+        $filter['city'] = $request->input('city');
+        $filter['category'] = $request->input('cc');
 
         $getclientid = new Client;
         $getclientid = $getclientid->getclient(Auth::user()->id);
@@ -203,7 +333,7 @@ class ClientController extends Controller
 
 
         $getlead = new Customer;
-        $records = $getlead->getbydate($client,$date);
+        $records = $getlead->getbydate($client,$date, $filter);
 
 
         return view('client::date.leadbydate', [
@@ -215,7 +345,27 @@ class ClientController extends Controller
 
     public function daterange()
     {
-        return view('client::date.daterange');
+        $getclientid = new Client;
+        $getclientid = $getclientid->getclient(Auth::user()->id);
+
+        foreach ($getclientid as $getclientid) {
+
+            $client = $getclientid->client_id;
+            
+        }
+
+        $cityM = new City;
+        $clientM = new Client;
+        $ccM = new Client_Category;
+        $citiesf = $cityM->getcity();
+        $clientsf = $clientM->getclients_view();
+        $ccf = $ccM->getclientcat($client);
+
+        return view('client::date.daterange',[
+            'citiesf' => $citiesf,
+            'clientsf' => $clientsf,
+            'ccf' => $ccf,
+        ]);
     }
 
     public function daterangereport(Request $request)
@@ -223,6 +373,11 @@ class ClientController extends Controller
         $date = $request->input('var1');
         $enddate = $request->input('var2');
 
+        $cityf = $request->input('city');
+        $ccf = $request->input('cc');
+        $filter = array([]);
+        $filter['city'] = $request->input('city');
+        $filter['category'] = $request->input('cc');
 
         $getclientid = new Client;
         $getclientid = $getclientid->getclient(Auth::user()->id);
@@ -235,7 +390,7 @@ class ClientController extends Controller
 
 
         $getlead = new Customer;
-        $records = $getlead->daterangereport($client,$date,$enddate);
+        $records = $getlead->daterangereport($client,$date,$enddate, $filter);
 
 
         return view('client::date.daterangereport', [
@@ -248,7 +403,27 @@ class ClientController extends Controller
 
     public function timemain()
     {
-        return view('client::time.timemain');
+        $getclientid = new Client;
+        $getclientid = $getclientid->getclient(Auth::user()->id);
+
+        foreach ($getclientid as $getclientid) {
+
+            $client = $getclientid->client_id;
+            
+        }
+
+        $cityM = new City;
+        $clientM = new Client;
+        $ccM = new Client_Category;
+        $citiesf = $cityM->getcity();
+        $clientsf = $clientM->getclients_view();
+        $ccf = $ccM->getclientcat($client);
+
+        return view('client::time.timemain',[
+            'citiesf' => $citiesf,
+            'clientsf' => $clientsf,
+            'ccf' => $ccf,
+        ]);
     }
 
     public function timerangereport(Request $request)
@@ -257,7 +432,11 @@ class ClientController extends Controller
         $starttime = $request->input('var2');
         $endtime = $request->input('var3');
 
-
+        $cityf = $request->input('city');
+        $ccf = $request->input('cc');
+        $filter = array([]);
+        $filter['city'] = $request->input('city');
+        $filter['category'] = $request->input('cc');
 
         $getclientid = new Client;
         $getclientid = $getclientid->getclient(Auth::user()->id);
@@ -270,7 +449,7 @@ class ClientController extends Controller
 
 
         $getlead = new Customer;
-        $records = $getlead->timerangereport($client,$date,$starttime,$endtime);
+        $records = $getlead->timerangereport($client,$date,$starttime,$endtime, $filter);
 
 
         return view('client::time.timerangereport', [

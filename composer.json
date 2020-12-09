@@ -15,7 +15,8 @@
         "intervention/image": "^2.5",
         "laravel/framework": "^7.24",
         "laravel/tinker": "^2.0",
-        "nwidart/laravel-modules": "^7.2"
+        "nwidart/laravel-modules": "^7.2",
+        "twilio/sdk": "^6.14"
     },
     "require-dev": {
         "facade/ignition": "^2.0",

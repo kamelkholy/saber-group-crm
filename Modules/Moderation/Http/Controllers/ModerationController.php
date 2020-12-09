@@ -18,9 +18,26 @@ use App\City;
 use App\Client_Category;
 use App\Customer_Action;
 use Auth;
+use Twilio\Rest\Client as TwilioClient;
 class ModerationController extends Controller
 {
 
+    // public function sendMsg()
+    // {
+    //     $keySid = 'SKbb84ab7444cc3fbe1300e1dd2290a40a';
+    //     $keySecret = 'FgO2mCewrfsDzlkuVd660FQNTrTJcxE6';
+    //     $accountSid = 'AC483f749c339374f304fea796c9a4cded';
+    //     $client = new TwilioClient($keySid, $keySecret, $accountSid);
+    //     $message = $client->messages->create(
+    //     '+20 111 365 3665', // Text this number
+    //     [
+    //         'from' => '+14235887285', // From a valid Twilio number
+    //         'body' => 'Hello from Twilio!'
+    //     ]
+    //     );
+
+    //     echo $message->sid;
+    // }
     public function home()
     {
         $date = date('Y-m-d');
@@ -89,6 +106,7 @@ class ModerationController extends Controller
         }
         $lead->user_id = Auth::user()->id;
         $lead->client_category = $request->input('var7');
+        $lead->email = $request->input('var8');
         $lead->save();
 
 
@@ -99,85 +117,200 @@ class ModerationController extends Controller
 
 
      //today reports
-    public function gettodayreport()
+    public function gettodayreport(Request $request)
     {   
         $date = date('Y-m-d');
 
+        $filter = array([]);
+        $filter['city'] = json_decode($request->query('city'));
+        $filter['client'] = json_decode($request->query('client'));
+        $filter['category'] = json_decode($request->query('category'));
+        $cityM = new City;
+        $clientM = new Client;
+        $ccM = new Client_Category;
+        $citiesf = $cityM->getcity();
+        $clientsf = $clientM->getclients_view();
+        $ccf = NULL;
+        // if(isset(Auth::user()->user_client)){
+        //     $ccf = $ccM->getclientcat(Auth::user()->user_client);
+        // } else {
+        //     $ccf = $ccM->getcat();
+        // }
+        $ccf = $ccM->getcat();
 
         $getlead = new Customer;
-        $records = $getlead->getlead_client_admin($date);
-
+        $records = $getlead->getlead_client_admin($date, $filter);
 
         return view('moderation::today.todayreport', [
             'data' => $records,
             'urls' => array(
+                'filter' => '/moderation/gettodayreport',
+                'module' => '/moderation',
             ),
+            'citiesf' => $citiesf,
+            'clientsf' => $clientsf,
+            'ccf' => $ccf,
         ]);
     }
 
-    public function getcurrentmonth()
+    public function getcurrentmonth(Request $request)
     {
 
         $month = date('m');
 
         $year = date('Y');
 
+        $filter = array([]);
+        $filter['city'] = json_decode($request->query('city'));
+        $filter['client'] = json_decode($request->query('client'));
+        $filter['category'] = json_decode($request->query('category'));
+        $cityM = new City;
+        $clientM = new Client;
+        $ccM = new Client_Category;
+        $citiesf = $cityM->getcity();
+        $clientsf = $clientM->getclients_view();
+        $ccf = NULL;
+        // if(isset(Auth::user()->user_client)){
+        //     $ccf = $ccM->getclientcat(Auth::user()->user_client);
+        // } else {
+        //     $ccf = $ccM->getcat();
+        // }
+        $ccf = $ccM->getcat();
 
         $getlead = new Customer;
-        $records = $getlead->getlead_client_month_admin($month,$year);
+        $records = $getlead->getlead_client_month_admin($month,$year, $filter);
 
 
         return view('moderation::today.currentmonth', [
             'data' => $records,
             'urls' => array(
+                'filter' => '/moderation/getcurrentmonth',
+                'module' => '/moderation',
             ),
+            'citiesf' => $citiesf,
+            'clientsf' => $clientsf,
+            'ccf' => $ccf,
         ]);
     }
 
-    public function getcurrentyear()
+    public function getcurrentyear(Request $request)
     {
         $year = date('Y');
 
+        $filter = array([]);
+        $filter['city'] = json_decode($request->query('city'));
+        $filter['client'] = json_decode($request->query('client'));
+        $filter['category'] = json_decode($request->query('category'));
+        $cityM = new City;
+        $clientM = new Client;
+        $ccM = new Client_Category;
+        $citiesf = $cityM->getcity();
+        $clientsf = $clientM->getclients_view();
+        $ccf = NULL;
+        // if(isset(Auth::user()->user_client)){
+        //     $ccf = $ccM->getclientcat(Auth::user()->user_client);
+        // } else {
+        //     $ccf = $ccM->getcat();
+        // }
+        $ccf = $ccM->getcat();
 
         $getlead = new Customer;
-        $records = $getlead->getlead_client_year_admin($year);
+        $records = $getlead->getlead_client_year_admin($year, $filter);
 
 
         return view('moderation::today.currentyear', [
             'data' => $records,
             'urls' => array(
+                'filter' => '/moderation/getcurrentyear',
+                'module' => '/moderation',
             ),
+            'citiesf' => $citiesf,
+            'clientsf' => $clientsf,
+            'ccf' => $ccf,
         ]);
     }
 
-    public function allleads()
+    public function allleads(Request $request)
     {
+        $filter = array([]);
+        $filter['city'] = json_decode($request->query('city'));
+        $filter['client'] = json_decode($request->query('client'));
+        $filter['category'] = json_decode($request->query('category'));
+        $cityM = new City;
+        $clientM = new Client;
+        $ccM = new Client_Category;
+        $citiesf = $cityM->getcity();
+        $clientsf = $clientM->getclients_view();
+        $ccf = NULL;
+        // if(isset(Auth::user()->user_client)){
+        //     $ccf = $ccM->getclientcat(Auth::user()->user_client);
+        // } else {
+        //     $ccf = $ccM->getcat();
+        // }
+        $ccf = $ccM->getcat();
 
         $getlead = new Customer;
-        $records = $getlead->getlead_client_all_admin();
+        $records = $getlead->getlead_client_all_admin($filter);
 
 
         return view('moderation::today.allleads', [
             'data' => $records,
             'urls' => array(
+                'filter' => '/moderation/allleads',
+                'module' => '/moderation',
             ),
+            'citiesf' => $citiesf,
+            'clientsf' => $clientsf,
+            'ccf' => $ccf,
         ]);
     }
 
-    public function manageleads()
+    public function manageleads(Request $request)
     {
+        
+        $filter = array([]);
+        $filter['city'] = json_decode($request->query('city'));
+        $filter['client'] = json_decode($request->query('client'));
+        $filter['category'] = json_decode($request->query('category'));
+        $cityM = new City;
+        $clientM = new Client;
+        $ccM = new Client_Category;
+        $citiesf = $cityM->getcity();
+        $clientsf = $clientM->getclients_view();
+        $ccf = NULL;
+        // if(isset(Auth::user()->user_client)){
+        //     $ccf = $ccM->getclientcat(Auth::user()->user_client);
+        // } else {
+        //     $ccf = $ccM->getcat();
+        // }
+        $ccf = $ccM->getcat();
 
         $getlead = new Customer;
-        $records = $getlead->getlead_client_all_admin_manage();
-
-
+        $records = $getlead->getlead_client_all_admin_manage($filter);
+        
         return view('moderation::today.allleads', [
             'data' => $records,
             'urls' => array(
+                'filter' => '/moderation/manageleads',
+                'module' => '/moderation',
                 'update' => '/crm/moderation/updatelead',
                 'delete' => '/crm/moderation/deletecustomer'
             ),
+            'citiesf' => $citiesf,
+            'clientsf' => $clientsf,
+            'ccf' => $ccf,
         ]);
+    }
+    public function filter(Request $request)
+    {
+
+        $input = $request->all();
+
+        $input['city'] = $request->input('city');
+        $input['client'] = $request->input('client');
+        $input['cc'] = $request->input('cc');
+
+        return redirect($request->query('back').'?city='.json_encode($input['city']).'&client='.json_encode($input['client']).'&category='.json_encode($input['cc']))->withInput($request->all());;
     }
 
     //delete 
@@ -220,7 +353,21 @@ class ModerationController extends Controller
     {
         $client = new Client;
         $client = $client->getallclients();
-        return view('moderation::monthly.monthlymain',['client' => $client]);
+
+        $cityM = new City;
+        $clientM = new Client;
+        $ccM = new Client_Category;
+        $citiesf = $cityM->getcity();
+        $clientsf = $clientM->getclients_view();
+        $ccf = $ccM->getcat();
+
+
+        return view('moderation::monthly.monthlymain',[
+            'client' => $client,
+            'citiesf' => $citiesf,
+            'clientsf' => $clientsf,
+            'ccf' => $ccf,
+        ]);
     }
 
     public function getmonrhlyreport(Request $request)
@@ -228,13 +375,20 @@ class ModerationController extends Controller
         $month = $request->input('var1');
         $year = $request->input('var2');
         $client = $request->input('var0');
+        
+        $cityf = $request->input('city');
+        $ccf = $request->input('cc');
+        $filter = array([]);
+        $filter['city'] = $request->input('city');
+        $filter['category'] = $request->input('cc');
 
         $getlead = new Customer;
-        $records = $getlead->getleadmonthlyreport($client,$month,$year);
+        $records = $getlead->getleadmonthlyreport($client,$month,$year, $filter);
         return view('moderation::monthly.monthlyreport', [
             'data' => $records,
             'urls' => array(
             ),
+
         ]);
     }
 
@@ -243,7 +397,20 @@ class ModerationController extends Controller
     {
         $client = new Client;
         $client = $client->getallclients();
-        return view('moderation::date.datemain',['client' => $client]);
+
+        $cityM = new City;
+        $clientM = new Client;
+        $ccM = new Client_Category;
+        $citiesf = $cityM->getcity();
+        $clientsf = $clientM->getclients_view();
+        $ccf = $ccM->getcat();
+
+        return view('moderation::date.datemain',[
+            'client' => $client,
+            'citiesf' => $citiesf,
+            'clientsf' => $clientsf,
+            'ccf' => $ccf,
+        ]);
     }
 
     public function datemain_get(Request $request)
@@ -251,9 +418,14 @@ class ModerationController extends Controller
         $date = $request->input('var1');
         $client = $request->input('var0');
 
-        $getlead = new Customer;
-        $records = $getlead->getbydate($client,$date);
+        $cityf = $request->input('city');
+        $ccf = $request->input('cc');
+        $filter = array([]);
+        $filter['city'] = $request->input('city');
+        $filter['category'] = $request->input('cc');
 
+        $getlead = new Customer;
+        $records = $getlead->getbydate($client,$date, $filter);
 
         return view('moderation::date.leadbydate', [
             'data' => $records,
@@ -266,7 +438,20 @@ class ModerationController extends Controller
     {
         $client = new Client;
         $client = $client->getallclients();
-        return view('moderation::date.daterange',['client' => $client]);
+
+        $cityM = new City;
+        $clientM = new Client;
+        $ccM = new Client_Category;
+        $citiesf = $cityM->getcity();
+        $clientsf = $clientM->getclients_view();
+        $ccf = $ccM->getcat();
+
+        return view('moderation::date.daterange',[
+            'client' => $client,
+            'citiesf' => $citiesf,
+            'clientsf' => $clientsf,
+            'ccf' => $ccf,
+        ]);
     }
 
     public function daterangereport(Request $request)
@@ -275,9 +460,14 @@ class ModerationController extends Controller
         $enddate = $request->input('var2');
         $client = $request->input('var0');
 
+        $cityf = $request->input('city');
+        $ccf = $request->input('cc');
+        $filter = array([]);
+        $filter['city'] = $request->input('city');
+        $filter['category'] = $request->input('cc');
 
         $getlead = new Customer;
-        $records = $getlead->daterangereport($client,$date,$enddate);
+        $records = $getlead->daterangereport($client,$date,$enddate, $filter);
 
 
         return view('moderation::date.daterangereport', [
@@ -291,7 +481,20 @@ class ModerationController extends Controller
     {
         $client = new Client;
         $client = $client->getallclients();
-        return view('moderation::time.timemain',['client' => $client]);
+
+        $cityM = new City;
+        $clientM = new Client;
+        $ccM = new Client_Category;
+        $citiesf = $cityM->getcity();
+        $clientsf = $clientM->getclients_view();
+        $ccf = $ccM->getcat();
+        
+        return view('moderation::time.timemain',[
+            'client' => $client,
+            'citiesf' => $citiesf,
+            'clientsf' => $clientsf,
+            'ccf' => $ccf,
+        ]);
     }
 
     public function timerangereport(Request $request)
@@ -301,9 +504,14 @@ class ModerationController extends Controller
         $endtime = $request->input('var3');
         $client = $request->input('var0');
 
+        $cityf = $request->input('city');
+        $ccf = $request->input('cc');
+        $filter = array([]);
+        $filter['city'] = $request->input('city');
+        $filter['category'] = $request->input('cc');
 
         $getlead = new Customer;
-        $records = $getlead->timerangereport($client,$date,$starttime,$endtime);
+        $records = $getlead->timerangereport($client,$date,$starttime,$endtime, $filter);
 
 
         return view('moderation::time.timerangereport', [

@@ -24,10 +24,9 @@
                                             <button style="background-color: black;border-color: black"  class="btn btn-danger btn-lg noPrint" onclick="goBack()"><i class="fa fa-chevron-circle-left"></i> {{__("Back")}}</button>
                                             <hr>
             
-                                    <form enctype="multipart/form-data" method="POST" action="{{url('/sales/action_store/'.request()->route('customer_id'))}}">
+                                    <form enctype="multipart/form-data" method="POST" action="{{url('/sales/action_store/'.request()->route('customer_id'))}}?back={{request()->query('back')}}">
                                             	{{csrf_field()}}
                                                 @include('layouts.errors')
-            
                                                 <div class="form-group">
                                                     <label>Action *</label>
                                                     <div>

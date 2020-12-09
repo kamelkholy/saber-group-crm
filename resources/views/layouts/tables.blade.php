@@ -1,16 +1,84 @@
-@if (count($data) > 0)        
+@if (isset($urls['filter']))  
+
+<form method="post" action="{{url($urls['module'])}}/filter?back={{$urls['filter']}}">
+{{csrf_field()}}
+  
+  <button type="submit" class="btn btn-primary waves-effect waves-light">Filter</button>
+  <a href="{{url($urls['filter'])}}" class="btn btn-danger">Clear</a>
+  <div class="container">
+    <div class="row" style="align-items: baseline;">
+    <h6 class="col-sm-2">Cities Filter :</h6>
+    <div class="col-md-10">
+    <div class="row">
+    @foreach($citiesf as $city)
+    <div class="col-sm-2 form-check-inline">
+      <label class="form-check-label" for="{{$city->city_id}}">
+      <input class="form-check-input" type="checkbox" name="city[]" value="{{$city->city_id}}" id="city_{{$city->city_id}}">{{$city->city_name}}
+      </label>
+    </div> 
+    @endforeach
+    </div>
+    </div>
+    </div>
+  </div>
+  <div class="container">
+    <div class="row" style="align-items: baseline;">
+    <h6 class="col-sm-2">Clients Filter :</h6>
+    <div class="col-md-10">
+    <div class="row">
+    @foreach($clientsf as $client)
+    <div class="col-sm-2 form-check-inline">
+      <label class="form-check-label" for="{{$client->client_id}}">
+      <input class="form-check-input" type="checkbox" name="client[]" value="{{$client->client_id}}" id="client_{{$client->client_id}}">{{$client->client_name}}
+      </label>
+    </div> 
+    @endforeach
+    </div>
+    </div>
+    </div>
+  </div>
+  <div class="container">
+    <div class="row" style="align-items: baseline;">
+    <h6 class="col-sm-2">Categories Filter :</h6>
+    <div class="col-md-10">
+    <div class="row">
+    @foreach($ccf as $cc)
+    <div class="col-sm-2 form-check-inline">
+      <label class="form-check-label" for="{{$cc->client_categories_id}}">
+      <input class="form-check-input" type="checkbox" name="cc[]" value="{{$cc->client_categories_id}}" id="cc_{{$cc->client_categories_id}}">{{$cc->client_categories_name}}
+      </label>
+    </div> 
+    @endforeach
+    </div>
+    </div>
+    </div>
+
+  </div>
+</form>  
+  <hr>
+  @endif
+@if (count($data) > 0)  
   <table   id="datatable-buttons" class="table table-striped table-bordered dt-responsive nowrap " style="border-collapse: collapse; border-spacing: 0; width: 100% !important;">
    
     <thead>
       <tr>
-          @foreach($data[0] as $key => $value)
+          @foreach($data as $fk => $first)
+            @foreach($first as $key => $value)
 
-            <th>{{$key}}</th>
+              <th>{{$key}}</th>
 
+            @endforeach
+            @break
           @endforeach
           @if(!empty($urls) && !(count($urls) == 1 && array_key_exists('add', $urls)))
             <th class="noPrint">#Actions</th>
           @endif
+          @isset($comments)
+          @for ($i = 0; $i < count(max($comments)); $i++)
+          <th data-visible="false"> Action #{{$i+1}} Comment</th>
+          @endfor
+          @endisset
+
       </tr>
     </thead>
 
@@ -100,7 +168,7 @@
        <!-- delete button-->
        @if(isset($urls['action']))
 
-         <a href="{{$urls['action']}}/{{ $currKey }}" class="btn btn-success btn-sm"><i class="fa fa-check-circle-o"></i> Action </a>
+         <a href="{{$urls['action']}}/{{ $currKey }}?back={{$urls['back']}}" class="btn btn-success btn-sm"><i class="fa fa-check-circle-o"></i> Action </a>
 
        @endif
 
@@ -128,9 +196,40 @@
 
         <!-- delete button-->
        @if(isset($urls['track']))
+       @isset($comments)
 
-         <a title="Call On Actions List" href="{{$urls['track']}}/{{ $currKey }}" class="btn btn-dark btn-sm"><i class="fa fa-info"></i></a>
+        <span style="position: relative;">
+          <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modal_{{$i}}" data-backdrop="false">
+          Comments
+          </button>
+          <div style="position: absolute; top: -200px; left: -200px;" class="modal fade" id="modal_{{$i}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">Actions Comments</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                @foreach($comments[$i] as $comment)
+                <ul>
+                <li>
+                {{$comment}}
+                </li>
+                </ul>
+                @endforeach
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </span>
+  @endisset
 
+        <a title="Call On Actions List" href="{{$urls['track']}}/{{ $currKey }}" class="btn btn-dark btn-sm"><i class="fa fa-info"></i></a>
        @endif
 
         <!-- delete button-->
@@ -156,6 +255,15 @@
 
   </td>
   @endif
+  @isset($comments)
+          @for ($index = 0; $index < count(max($comments)); $index++)
+           <td>
+           @if($index < count($comments[$i])) 
+           {{$comments[$i][$index]}}
+           @endif
+           </td>
+          @endfor
+  @endisset
       </tr>
       @endforeach
 

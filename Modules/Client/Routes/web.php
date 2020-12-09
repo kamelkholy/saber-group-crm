@@ -13,6 +13,7 @@
 
 Route::prefix('client')->group(function() {
     Route::get('/', 'ClientController@home')->middleware('Client');
+    Route::post('/filter', 'ClientController@filter')->middleware('Client');
 
     //reports
     Route::get('/gettodayreport', 'ClientController@gettodayreport')->middleware('Client');

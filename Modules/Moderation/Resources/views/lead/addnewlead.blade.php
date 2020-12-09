@@ -37,6 +37,14 @@
                                                 </div>
 
                                                 <div class="form-group">
+                                                    <label>Email</label>
+                                                    <div>
+                                                        <input name="var8" id="email" type="email" class="form-control" 
+                                                                placeholder="Email"/>
+                                                    </div>
+                                                </div>
+
+                                                <div class="form-group">
                                                     <label>Mobile *</label>
                                                     <div>
                                                         <input name="var2" id="var2" min="11"  type="Number" class="form-control" required
@@ -55,7 +63,6 @@
                                                 </div>
 
                                                 <hr>
-
 
                                                 <div class="form-group">
                                                     <label>City *</label>
