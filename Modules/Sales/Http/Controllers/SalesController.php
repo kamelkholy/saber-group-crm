@@ -25,7 +25,25 @@ class SalesController extends Controller
         $input['client'] = $request->input('client');
         $input['cc'] = $request->input('cc');
 
-        return redirect($request->query('back').'?city='.json_encode($input['city']).'&client='.json_encode($input['client']).'&category='.json_encode($input['cc']))->withInput($request->all());;
+        return redirect($request->query('back') . '?city=' . json_encode($input['city']) . '&client=' . json_encode($input['client']) . '&category=' . json_encode($input['cc']))->withInput($request->all());;
+    }
+    public function viewlead($customer_id)
+    {
+        $customer = new Customer;
+        $customer = $customer->getcustomerupdate($customer_id);
+        if (empty($customer)) {
+            return redirect('/sales');
+        }
+        $client = new Client;
+        $client = $client->getclients_view();
+        $city = new City;
+        $city = $city->getcity();
+        return view('sales::lead.viewlead', [
+            'customer' => $customer, 'city' => $city, 'client' => $client,
+            'urls' => array(
+                'action' => '/crm/sales/action',
+            ),
+        ]);
     }
     public function saleshome()
     {
@@ -33,17 +51,20 @@ class SalesController extends Controller
         $date = date('Y-m-d');
         $month = date('m');
         $year = date('Y');
-        $today = Customer::where('customer_date',$date)->where('client_id',$client)->count('customer_date');
-        $currmonth = Customer::where('customer_month',$month)
-        ->where('customer_year',$year)->where('client_id',$client)->count('customer_month');
-        $curryear = Customer::where('customer_year',$year)->where('client_id',$client)->count('customer_year');
-        $allleads = Customer::where('client_id',$client)->count();
-        $deals = Customer::where('customer_status',3)->where('client_id',$client)->count('customer_status');
-        $calls = Customer::where('customer_status',1)->where('client_id',$client)->count('customer_status');
-        $hold = Customer::where('customer_status',2)->where('client_id',$client)->count('customer_status');
-        $noaction = Customer::where('customer_status',0)
-        ->where('client_id',$client)->count('customer_status');
-        return view('sales::layouts.saleshome',[
+        $today = Customer::where('customer_date', $date)->where('client_id', $client)->count('customer_date');
+        $currmonth = Customer::where('customer_month', $month)
+            ->where('customer_year', $year)->where('client_id', $client)->count('customer_month');
+        $curryear = Customer::where('customer_year', $year)->where('client_id', $client)->count('customer_year');
+        $allleads = Customer::where('client_id', $client)->count();
+        $deals = Customer::where('customer_status', 3)->where('client_id', $client)->count('customer_status');
+        $calls = Customer::where('customer_status', 1)->where('client_id', $client)->count('customer_status');
+        $hold = Customer::where('customer_status', 2)->where('client_id', $client)->count('customer_status');
+        $noaction = Customer::where('customer_status', 0)
+            ->where('client_id', $client)->count('customer_status');
+        $notifications = $this->notifications();
+
+        return view('sales::layouts.saleshome', [
+            'notifications' => $notifications,
             'allleads' => $allleads,
             'currmonth' => $currmonth,
             'curryear' => $curryear,
@@ -55,7 +76,10 @@ class SalesController extends Controller
 
         ]);
     }
-
+    public function notifications()
+    {
+        return json_encode(Auth::user()->unreadNotifications()->get()->toArray());
+    }
     //today reports
     public function gettodayreport(Request $request)
     {
@@ -76,7 +100,8 @@ class SalesController extends Controller
 
 
         $getlead = new Customer;
-        $records = $getlead->getlead_client(Auth::user()->user_client,$date, $filter);
+        $records = $getlead->getlead_client(Auth::user()->user_client, $date, $filter);
+        $notifications = $this->notifications();
 
 
         return view('sales::today.todayreport', [
@@ -113,7 +138,8 @@ class SalesController extends Controller
 
 
         $getlead = new Customer;
-        $records = $getlead->getlead_client_actions(Auth::user()->user_client,$date,$status, $filter);
+        $records = $getlead->getlead_client_actions(Auth::user()->user_client, $date, $status, $filter);
+        $notifications = $this->notifications();
 
 
         return view('sales::today.todayreport', [
@@ -150,19 +176,19 @@ class SalesController extends Controller
 
 
         $getlead = new Customer;
-        $records = $getlead->getlead_client_actions(Auth::user()->user_client,$date,$status, $filter);
+        $records = $getlead->getlead_client_actions(Auth::user()->user_client, $date, $status, $filter);
         $unique = array();
         $comments = array([]);
         foreach ($records as $key => $value) {
-            if(array_key_exists($value->ID, $unique)){
+            if (array_key_exists($value->ID, $unique)) {
                 array_push($comments[$value->ID], $value->Comment);
-            }
-            else{
+            } else {
                 $comments[$value->ID] = array($value->Comment);
                 unset($value->Comment);
                 $unique[$value->ID] = $value;
             }
         }
+        $notifications = $this->notifications();
 
         return view('sales::today.todayreport', [
             'data' => $unique,
@@ -198,19 +224,19 @@ class SalesController extends Controller
 
 
         $getlead = new Customer;
-        $records = $getlead->getlead_client_actions(Auth::user()->user_client,$date,$status, $filter);
+        $records = $getlead->getlead_client_actions(Auth::user()->user_client, $date, $status, $filter);
         $unique = array();
         $comments = array([]);
         foreach ($records as $key => $value) {
-            if(array_key_exists($value->ID, $unique)){
+            if (array_key_exists($value->ID, $unique)) {
                 array_push($comments[$value->ID], $value->Comment);
-            }
-            else{
+            } else {
                 $comments[$value->ID] = array($value->Comment);
                 unset($value->Comment);
                 $unique[$value->ID] = $value;
             }
         }
+        $notifications = $this->notifications();
 
         return view('sales::today.todayreport', [
             'data' => $unique,
@@ -248,19 +274,19 @@ class SalesController extends Controller
 
 
         $getlead = new Customer;
-        $records = $getlead->getlead_client_actions(Auth::user()->user_client,$date,$status, $filter);
+        $records = $getlead->getlead_client_actions(Auth::user()->user_client, $date, $status, $filter);
         $unique = array();
         $comments = array([]);
         foreach ($records as $key => $value) {
-            if(array_key_exists($value->ID, $unique)){
+            if (array_key_exists($value->ID, $unique)) {
                 array_push($comments[$value->ID], $value->Comment);
-            }
-            else{
+            } else {
                 $comments[$value->ID] = array($value->Comment);
                 unset($value->Comment);
                 $unique[$value->ID] = $value;
             }
         }
+        $notifications = $this->notifications();
 
         return view('sales::today.todayreport', [
             'data' => $unique,
@@ -279,7 +305,7 @@ class SalesController extends Controller
 
     public function getcurrentmonth(Request $request)
     {
-      
+
 
         $month = date('m');
 
@@ -303,7 +329,8 @@ class SalesController extends Controller
         $ccf = $ccM->getclientcat(Auth::user()->user_client);
 
         $getlead = new Customer;
-        $records = $getlead->getlead_client_month(Auth::user()->user_client,$month,$year, $filter);
+        $records = $getlead->getlead_client_month(Auth::user()->user_client, $month, $year, $filter);
+        $notifications = $this->notifications();
 
 
         return view('sales::today.currentmonth', [
@@ -321,7 +348,7 @@ class SalesController extends Controller
     //month
     public function getcurrentmonth_noaction(Request $request)
     {
-      
+
 
         $month = date('m');
 
@@ -346,7 +373,8 @@ class SalesController extends Controller
         $ccf = $ccM->getclientcat(Auth::user()->user_client);
 
         $getlead = new Customer;
-        $records = $getlead->getlead_client_month_actions(Auth::user()->user_client,$month,$year,$status, $filter);
+        $records = $getlead->getlead_client_month_actions(Auth::user()->user_client, $month, $year, $status, $filter);
+        $notifications = $this->notifications();
 
 
         return view('sales::today.currentmonth', [
@@ -365,7 +393,7 @@ class SalesController extends Controller
 
     public function getcurrentmonth_done(Request $request)
     {
-      
+
 
         $month = date('m');
 
@@ -390,25 +418,25 @@ class SalesController extends Controller
         $ccf = $ccM->getclientcat(Auth::user()->user_client);
 
         $getlead = new Customer;
-        $records = $getlead->getlead_client_month_actions(Auth::user()->user_client,$month,$year,$status, $filter);
+        $records = $getlead->getlead_client_month_actions(Auth::user()->user_client, $month, $year, $status, $filter);
         $unique = array();
         $comments = array([]);
         foreach ($records as $key => $value) {
-            if(array_key_exists($value->ID, $unique)){
+            if (array_key_exists($value->ID, $unique)) {
                 array_push($comments[$value->ID], $value->Comment);
-            }
-            else{
+            } else {
                 $comments[$value->ID] = array($value->Comment);
                 unset($value->Comment);
                 $unique[$value->ID] = $value;
             }
         }
+        $notifications = $this->notifications();
 
         return view('sales::today.currentmonth', [
             'data' => $unique,
             'comments' => $comments,
             'urls' => array(
-                 'action' => '/crm/sales/action',
+                'action' => '/crm/sales/action',
                 'track' => '/crm/sales/getcustomertrack',
                 'back'  => '/sales/getcurrentmonth_done',
                 'filter' => '/sales/getcurrentmonth_done',
@@ -422,7 +450,7 @@ class SalesController extends Controller
 
     public function getcurrentmonth_onhold(Request $request)
     {
-      
+
 
         $month = date('m');
 
@@ -447,25 +475,25 @@ class SalesController extends Controller
         $ccf = $ccM->getclientcat(Auth::user()->user_client);
 
         $getlead = new Customer;
-        $records = $getlead->getlead_client_month_actions(Auth::user()->user_client,$month,$year,$status, $filter);
+        $records = $getlead->getlead_client_month_actions(Auth::user()->user_client, $month, $year, $status, $filter);
         $unique = array();
         $comments = array([]);
         foreach ($records as $key => $value) {
-            if(array_key_exists($value->ID, $unique)){
+            if (array_key_exists($value->ID, $unique)) {
                 array_push($comments[$value->ID], $value->Comment);
-            }
-            else{
+            } else {
                 $comments[$value->ID] = array($value->Comment);
                 unset($value->Comment);
                 $unique[$value->ID] = $value;
             }
         }
+        $notifications = $this->notifications();
 
         return view('sales::today.currentmonth', [
             'data' => $unique,
             'comments' => $comments,
             'urls' => array(
-                 'action' => '/crm/sales/action',
+                'action' => '/crm/sales/action',
                 'track' => '/crm/sales/getcustomertrack',
                 'back'  => '/sales/getcurrentmonth_onhold',
                 'filter' => '/sales/getcurrentmonth_onhold',
@@ -479,7 +507,7 @@ class SalesController extends Controller
 
     public function getcurrentmonth_deal(Request $request)
     {
-      
+
 
         $month = date('m');
 
@@ -504,19 +532,19 @@ class SalesController extends Controller
         $ccf = $ccM->getclientcat(Auth::user()->user_client);
 
         $getlead = new Customer;
-        $records = $getlead->getlead_client_month_actions(Auth::user()->user_client,$month,$year,$status, $filter);
+        $records = $getlead->getlead_client_month_actions(Auth::user()->user_client, $month, $year, $status, $filter);
         $unique = array();
         $comments = array([]);
         foreach ($records as $key => $value) {
-            if(array_key_exists($value->ID, $unique)){
+            if (array_key_exists($value->ID, $unique)) {
                 array_push($comments[$value->ID], $value->Comment);
-            }
-            else{
+            } else {
                 $comments[$value->ID] = array($value->Comment);
                 unset($value->Comment);
                 $unique[$value->ID] = $value;
             }
         }
+        $notifications = $this->notifications();
 
         return view('sales::today.currentmonth', [
             'data' => $unique,
@@ -534,7 +562,7 @@ class SalesController extends Controller
 
     public function getcurrentyear(Request $request)
     {
-       
+
         $year = date('Y');
 
         $filter = array([]);
@@ -555,7 +583,8 @@ class SalesController extends Controller
         $ccf = $ccM->getclientcat(Auth::user()->user_client);
 
         $getlead = new Customer;
-        $records = $getlead->getlead_client_year(Auth::user()->user_client,$year, $filter);
+        $records = $getlead->getlead_client_year(Auth::user()->user_client, $year, $filter);
+        $notifications = $this->notifications();
 
 
         return view('sales::today.currentyear', [
@@ -572,7 +601,7 @@ class SalesController extends Controller
 
     public function getcurrentyear_noaction(Request $request)
     {
-       
+
         $year = date('Y');
         $status = 0;
 
@@ -594,7 +623,8 @@ class SalesController extends Controller
         $ccf = $ccM->getclientcat(Auth::user()->user_client);
 
         $getlead = new Customer;
-        $records = $getlead->getlead_client_year_action(Auth::user()->user_client,$year,$status, $filter);
+        $records = $getlead->getlead_client_year_action(Auth::user()->user_client, $year, $status, $filter);
+        $notifications = $this->notifications();
 
 
         return view('sales::today.currentyear', [
@@ -613,7 +643,7 @@ class SalesController extends Controller
 
     public function getcurrentyear_done(Request $request)
     {
-       
+
         $year = date('Y');
         $status = 1;
 
@@ -635,19 +665,19 @@ class SalesController extends Controller
         $ccf = $ccM->getclientcat(Auth::user()->user_client);
 
         $getlead = new Customer;
-        $records = $getlead->getlead_client_year_action(Auth::user()->user_client,$year,$status, $filter);
+        $records = $getlead->getlead_client_year_action(Auth::user()->user_client, $year, $status, $filter);
         $unique = array();
         $comments = array([]);
         foreach ($records as $key => $value) {
-            if(array_key_exists($value->ID, $unique)){
+            if (array_key_exists($value->ID, $unique)) {
                 array_push($comments[$value->ID], $value->Comment);
-            }
-            else{
+            } else {
                 $comments[$value->ID] = array($value->Comment);
                 unset($value->Comment);
                 $unique[$value->ID] = $value;
             }
         }
+        $notifications = $this->notifications();
 
         return view('sales::today.currentyear', [
             'data' => $unique,
@@ -667,7 +697,7 @@ class SalesController extends Controller
 
     public function getcurrentyear_onhold(Request $request)
     {
-       
+
         $year = date('Y');
         $status = 2;
 
@@ -689,19 +719,19 @@ class SalesController extends Controller
         $ccf = $ccM->getclientcat(Auth::user()->user_client);
 
         $getlead = new Customer;
-        $records = $getlead->getlead_client_year_action(Auth::user()->user_client,$year,$status, $filter);
+        $records = $getlead->getlead_client_year_action(Auth::user()->user_client, $year, $status, $filter);
         $unique = array();
         $comments = array([]);
         foreach ($records as $key => $value) {
-            if(array_key_exists($value->ID, $unique)){
+            if (array_key_exists($value->ID, $unique)) {
                 array_push($comments[$value->ID], $value->Comment);
-            }
-            else{
+            } else {
                 $comments[$value->ID] = array($value->Comment);
                 unset($value->Comment);
                 $unique[$value->ID] = $value;
             }
         }
+        $notifications = $this->notifications();
 
         return view('sales::today.currentyear', [
             'data' => $unique,
@@ -721,7 +751,7 @@ class SalesController extends Controller
 
     public function getcurrentyear_deal(Request $request)
     {
-       
+
         $year = date('Y');
         $status = 3;
 
@@ -743,19 +773,19 @@ class SalesController extends Controller
         $ccf = $ccM->getclientcat(Auth::user()->user_client);
 
         $getlead = new Customer;
-        $records = $getlead->getlead_client_year_action(Auth::user()->user_client,$year,$status, $filter);
+        $records = $getlead->getlead_client_year_action(Auth::user()->user_client, $year, $status, $filter);
         $unique = array();
         $comments = array([]);
         foreach ($records as $key => $value) {
-            if(array_key_exists($value->ID, $unique)){
+            if (array_key_exists($value->ID, $unique)) {
                 array_push($comments[$value->ID], $value->Comment);
-            }
-            else{
+            } else {
                 $comments[$value->ID] = array($value->Comment);
                 unset($value->Comment);
                 $unique[$value->ID] = $value;
             }
         }
+        $notifications = $this->notifications();
 
         return view('sales::today.currentyear', [
             'data' => $unique,
@@ -773,7 +803,7 @@ class SalesController extends Controller
 
 
     //call on action 
-     //on hold
+    //on hold
     public function onhold($customer_id)
     {
         $status = 2;
@@ -787,7 +817,7 @@ class SalesController extends Controller
         $action->save();
 
         $customer = new Customer;
-        $customer = $customer->changestatus($customer_id,$status);
+        $customer = $customer->changestatus($customer_id, $status);
 
         return back();
     }
@@ -805,7 +835,7 @@ class SalesController extends Controller
         $action->save();
 
         $customer = new Customer;
-        $customer = $customer->changestatus($customer_id,$status);
+        $customer = $customer->changestatus($customer_id, $status);
 
         return back();
     }
@@ -823,38 +853,40 @@ class SalesController extends Controller
         $action->save();
 
         $customer = new Customer;
-        $customer = $customer->changestatus($customer_id,$status);
+        $customer = $customer->changestatus($customer_id, $status);
 
         return back();
     }
 
-     public function getcustomertrack($customer_id)
+    public function getcustomertrack($customer_id)
     {
-       
+
 
 
         $getlead = new Customer_Action;
         $records = $getlead->gettrack($customer_id);
+        $notifications = $this->notifications();
 
 
         return view('sales::track.gettrack', [
             'data' => $records,
-            'urls' => array(
-            ),
+            'urls' => array(),
         ]);
     }
 
 
-     //new update 
+    //new update 
     public function action(Request $request)
     {
         // if ($request->session->has('backUrl')) {
         //     $request->session->keep('backUrl');
         // }
+        $notifications = $this->notifications();
+
         return view('sales::track.action');
     }
 
-    public function action_store(Request $request,$customer_id)
+    public function action_store(Request $request, $customer_id)
     {
         $action = new Customer_Action;
         $action->user_id = Auth::user()->id;
@@ -866,10 +898,8 @@ class SalesController extends Controller
         $action->save();
 
         $customer = new Customer;
-        $customer = $customer->changestatus($customer_id,$request->input('var1'));
+        $customer = $customer->changestatus($customer_id, $request->input('var1'));
 
         return redirect($request->query('back'));
     }
-
-
 }

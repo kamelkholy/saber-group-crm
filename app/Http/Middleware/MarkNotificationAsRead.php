@@ -3,9 +3,8 @@
 namespace App\Http\Middleware;
 
 use Closure;
-use Auth;
 
-class Sales
+class MarkNotificationAsRead
 {
     /**
      * Handle an incoming request.
@@ -16,13 +15,12 @@ class Sales
      */
     public function handle($request, Closure $next)
     {
-        if (Auth::check()) {
-            if (Auth::user()->user_type == 4) {
-                return $next($request);
+        if($request->has('read')) {
+            $notification = $request->user()->notifications()->where('id', $request->read)->first();
+            if($notification) {
+                $notification->markAsRead();
             }
         }
-        return redirect('/')->withErrors([
-            'message' => 'Not Allowed'
-        ]);
+        return $next($request);
     }
 }

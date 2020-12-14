@@ -11,9 +11,12 @@
 |
 */
 
-Route::prefix('sales')->group(function() {
+Route::prefix('sales')->group(function () {
     Route::get('/', 'SalesController@saleshome')->middleware('Sales');
+    Route::get('/notifications', 'SalesController@notifications')->middleware('Sales');
     Route::post('/filter', 'SalesController@filter')->middleware('Sales');
+    Route::get('/viewlead/{customer_id}', 'SalesController@viewlead')->middleware('Sales', 'MarkNotificationAsRead');
+
     //reports
     Route::get('/gettodayreport', 'SalesController@gettodayreport')->middleware('Sales');
     Route::get('/getcurrentmonth', 'SalesController@getcurrentmonth')->middleware('Sales');

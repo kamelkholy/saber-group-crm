@@ -8,7 +8,8 @@ use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Storage;
 
-
+use Notification;
+use App\Notifications\LeadCreated;
 
 use App\Client;
 use App\Customer;
@@ -108,7 +109,10 @@ class ModerationController extends Controller
         $lead->client_category = $request->input('var7');
         $lead->email = $request->input('var8');
         $lead->save();
-
+        
+        $userM = new User;
+        $usersToNotify = $userM->getClientUsers($lead->client_id);
+        Notification::send($usersToNotify, new LeadCreated($lead));
 
         return redirect()->back()
         ->with('success','Lead Added Successfully !');

@@ -10,13 +10,13 @@ use Carbon\Carbon;
 class Customer extends Model
 {
     public $table = "customers";
-    protected $primaryKey = 'customer_id';	
+    protected $primaryKey = 'customer_id';
 
-    protected $fillable = 
-    ['var0','var1','var2','var3','var4','var5','var6','var7','var8','var9','var10','var11',];
+    protected $fillable =
+    ['var0', 'var1', 'var2', 'var3', 'var4', 'var5', 'var6', 'var7', 'var8', 'var9', 'var10', 'var11',];
 
 
-    public function getlead_client($client_id,$date_now, $filter = array([]))
+    public function getlead_client($client_id, $date_now, $filter = array([]))
     {
         $query = '
 
@@ -54,23 +54,23 @@ class Customer extends Model
         $clientf = '';
         $categoryf = '';
         $params = array();
-        if(isset($filter['city'])){
-            $cityf = 'customer_city IN (?'.str_repeat(",?", count($filter["city"])-1).')';
+        if (isset($filter['city'])) {
+            $cityf = 'customer_city IN (?' . str_repeat(",?", count($filter["city"]) - 1) . ')';
             $params = array_merge($params, $filter['city']);
         }
-        if(isset($filter['category'])){
-            $categoryf = 'client_category IN (?'.str_repeat(",?", count($filter["category"])-1).')';
+        if (isset($filter['category'])) {
+            $categoryf = 'client_category IN (?' . str_repeat(",?", count($filter["category"]) - 1) . ')';
             $params = array_merge($params, $filter['category']);
         }
-        $and =join(" AND ",array_filter(array($cityf, $clientf, $categoryf)));
-        if(!empty($and)){
+        $and = join(" AND ", array_filter(array($cityf, $clientf, $categoryf)));
+        if (!empty($and)) {
             $query .= 'AND ' . $and;
         }
-    	$customers = DB::select($query,array_merge([$client_id, $date_now], $params));
-    	return $customers;
+        $customers = DB::select($query, array_merge([$client_id, $date_now], $params));
+        return $customers;
     }
 
-    public function getlead_client_month($client_id,$month,$year, $filter = array([]))
+    public function getlead_client_month($client_id, $month, $year, $filter = array([]))
     {
         $query = '
 
@@ -108,23 +108,23 @@ class Customer extends Model
         $clientf = '';
         $categoryf = '';
         $params = array();
-        if(isset($filter['city'])){
-            $cityf = 'customer_city IN (?'.str_repeat(",?", count($filter["city"])-1).')';
+        if (isset($filter['city'])) {
+            $cityf = 'customer_city IN (?' . str_repeat(",?", count($filter["city"]) - 1) . ')';
             $params = array_merge($params, $filter['city']);
         }
-        if(isset($filter['category'])){
-            $categoryf = 'client_category IN (?'.str_repeat(",?", count($filter["category"])-1).')';
+        if (isset($filter['category'])) {
+            $categoryf = 'client_category IN (?' . str_repeat(",?", count($filter["category"]) - 1) . ')';
             $params = array_merge($params, $filter['category']);
         }
-        $and =join(" AND ",array_filter(array($cityf, $clientf, $categoryf)));
-        if(!empty($and)){
+        $and = join(" AND ", array_filter(array($cityf, $clientf, $categoryf)));
+        if (!empty($and)) {
             $query .= 'AND ' . $and;
         }
-        $customers = DB::select($query,array_merge([$client_id, $month, $year], $params));
-    	return $customers;
+        $customers = DB::select($query, array_merge([$client_id, $month, $year], $params));
+        return $customers;
     }
 
-    public function getlead_client_year($client_id,$year, $filter = array([]))
+    public function getlead_client_year($client_id, $year, $filter = array([]))
     {
         $query = '
 
@@ -161,20 +161,20 @@ class Customer extends Model
         $clientf = '';
         $categoryf = '';
         $params = array();
-        if(isset($filter['city'])){
-            $cityf = 'customer_city IN (?'.str_repeat(",?", count($filter["city"])-1).')';
+        if (isset($filter['city'])) {
+            $cityf = 'customer_city IN (?' . str_repeat(",?", count($filter["city"]) - 1) . ')';
             $params = array_merge($params, $filter['city']);
         }
-        if(isset($filter['category'])){
-            $categoryf = 'client_category IN (?'.str_repeat(",?", count($filter["category"])-1).')';
+        if (isset($filter['category'])) {
+            $categoryf = 'client_category IN (?' . str_repeat(",?", count($filter["category"]) - 1) . ')';
             $params = array_merge($params, $filter['category']);
         }
-        $and =join(" AND ",array_filter(array($cityf, $clientf, $categoryf)));
-        if(!empty($and)){
+        $and = join(" AND ", array_filter(array($cityf, $clientf, $categoryf)));
+        if (!empty($and)) {
             $query .= 'AND ' . $and;
         }
-        $customers = DB::select($query,array_merge([ $client_id, $year], $params));
-    	return $customers;
+        $customers = DB::select($query, array_merge([$client_id, $year], $params));
+        return $customers;
     }
 
     public function getlead_client_all($client_id, $filter = array([]))
@@ -215,25 +215,25 @@ class Customer extends Model
         $clientf = '';
         $categoryf = '';
         $params = array();
-        if(isset($filter['city'])){
-            $cityf = 'customer_city IN (?'.str_repeat(",?", count($filter["city"])-1).')';
+        if (isset($filter['city'])) {
+            $cityf = 'customer_city IN (?' . str_repeat(",?", count($filter["city"]) - 1) . ')';
             $params = array_merge($params, $filter['city']);
         }
-        if(isset($filter['category'])){
-            $categoryf = 'client_category IN (?'.str_repeat(",?", count($filter["category"])-1).')';
+        if (isset($filter['category'])) {
+            $categoryf = 'client_category IN (?' . str_repeat(",?", count($filter["category"]) - 1) . ')';
             $params = array_merge($params, $filter['category']);
         }
-        $and =join(" AND ",array_filter(array($cityf, $clientf, $categoryf)));
-        if(!empty($and)){
+        $and = join(" AND ", array_filter(array($cityf, $clientf, $categoryf)));
+        if (!empty($and)) {
             $query .= 'AND ' . $and;
         }
-        $customers = DB::select($query,array_merge([ $client_id], $params));
-    	return $customers;
+        $customers = DB::select($query, array_merge([$client_id], $params));
+        return $customers;
     }
 
 
 
-    public function getleadmonthlyreport($client_id,$month,$year, $filter = array([]))
+    public function getleadmonthlyreport($client_id, $month, $year, $filter = array([]))
     {
         $query = '
 
@@ -270,24 +270,24 @@ class Customer extends Model
         $clientf = '';
         $categoryf = '';
         $params = array();
-        if(isset($filter['city'])){
-            $cityf = 'customer_city IN (?'.str_repeat(",?", count($filter["city"])-1).')';
+        if (isset($filter['city'])) {
+            $cityf = 'customer_city IN (?' . str_repeat(",?", count($filter["city"]) - 1) . ')';
             $params = array_merge($params, $filter['city']);
         }
-        if(isset($filter['category'])){
-            $categoryf = 'client_category IN (?'.str_repeat(",?", count($filter["category"])-1).')';
+        if (isset($filter['category'])) {
+            $categoryf = 'client_category IN (?' . str_repeat(",?", count($filter["category"]) - 1) . ')';
             $params = array_merge($params, $filter['category']);
         }
-        $and =join(" AND ",array_filter(array($cityf, $clientf, $categoryf)));
-        if(!empty($and)){
+        $and = join(" AND ", array_filter(array($cityf, $clientf, $categoryf)));
+        if (!empty($and)) {
             $query .= 'AND ' . $and;
         }
-        $customers = DB::select($query,array_merge([ $client_id, $month, $year], $params));
+        $customers = DB::select($query, array_merge([$client_id, $month, $year], $params));
 
-    	return $customers;
+        return $customers;
     }
 
-    public function getbydate($client_id,$date_val, $filter = array([]))
+    public function getbydate($client_id, $date_val, $filter = array([]))
     {
         $query = '
 
@@ -324,25 +324,25 @@ class Customer extends Model
         $clientf = '';
         $categoryf = '';
         $params = array();
-        if(isset($filter['city'])){
-            $cityf = 'customer_city IN (?'.str_repeat(",?", count($filter["city"])-1).')';
+        if (isset($filter['city'])) {
+            $cityf = 'customer_city IN (?' . str_repeat(",?", count($filter["city"]) - 1) . ')';
             $params = array_merge($params, $filter['city']);
         }
-        if(isset($filter['category'])){
-            $categoryf = 'client_category IN (?'.str_repeat(",?", count($filter["category"])-1).')';
+        if (isset($filter['category'])) {
+            $categoryf = 'client_category IN (?' . str_repeat(",?", count($filter["category"]) - 1) . ')';
             $params = array_merge($params, $filter['category']);
         }
-        $and =join(" AND ",array_filter(array($cityf, $clientf, $categoryf)));
-        if(!empty($and)){
+        $and = join(" AND ", array_filter(array($cityf, $clientf, $categoryf)));
+        if (!empty($and)) {
             $query .= 'AND ' . $and;
         }
-        $customers = DB::select($query,array_merge([$client_id, $date_val], $params));
+        $customers = DB::select($query, array_merge([$client_id, $date_val], $params));
 
         return $customers;
     }
 
 
-    public function daterangereport($client_id,$date_val,$date_end, $filter = array([]))
+    public function daterangereport($client_id, $date_val, $date_end, $filter = array([]))
     {
         $query = '
 
@@ -379,25 +379,25 @@ class Customer extends Model
         $clientf = '';
         $categoryf = '';
         $params = array();
-        if(isset($filter['city'])){
-            $cityf = 'customer_city IN (?'.str_repeat(",?", count($filter["city"])-1).')';
+        if (isset($filter['city'])) {
+            $cityf = 'customer_city IN (?' . str_repeat(",?", count($filter["city"]) - 1) . ')';
             $params = array_merge($params, $filter['city']);
         }
-        if(isset($filter['category'])){
-            $categoryf = 'client_category IN (?'.str_repeat(",?", count($filter["category"])-1).')';
+        if (isset($filter['category'])) {
+            $categoryf = 'client_category IN (?' . str_repeat(",?", count($filter["category"]) - 1) . ')';
             $params = array_merge($params, $filter['category']);
         }
-        $and =join(" AND ",array_filter(array($cityf, $clientf, $categoryf)));
-        if(!empty($and)){
+        $and = join(" AND ", array_filter(array($cityf, $clientf, $categoryf)));
+        if (!empty($and)) {
             $query .= 'AND ' . $and;
         }
-        $customers = DB::select($query,array_merge([ $client_id, $date_val, $date_end], $params));
+        $customers = DB::select($query, array_merge([$client_id, $date_val, $date_end], $params));
 
         return $customers;
     }
 
 
-    public function timerangereport($client_id,$date_val,$start_time,$end_time,$start_am_pm,$end_am_pm, $filter = array([]))
+    public function timerangereport($client_id, $date_val, $start_time, $end_time, $start_am_pm, $end_am_pm, $filter = array([]))
     {
         $query = '
 
@@ -434,19 +434,19 @@ class Customer extends Model
         $clientf = '';
         $categoryf = '';
         $params = array();
-        if(isset($filter['city'])){
-            $cityf = 'customer_city IN (?'.str_repeat(",?", count($filter["city"])-1).')';
+        if (isset($filter['city'])) {
+            $cityf = 'customer_city IN (?' . str_repeat(",?", count($filter["city"]) - 1) . ')';
             $params = array_merge($params, $filter['city']);
         }
-        if(isset($filter['category'])){
-            $categoryf = 'client_category IN (?'.str_repeat(",?", count($filter["category"])-1).')';
+        if (isset($filter['category'])) {
+            $categoryf = 'client_category IN (?' . str_repeat(",?", count($filter["category"]) - 1) . ')';
             $params = array_merge($params, $filter['category']);
         }
-        $and =join(" AND ",array_filter(array($cityf, $clientf, $categoryf)));
-        if(!empty($and)){
+        $and = join(" AND ", array_filter(array($cityf, $clientf, $categoryf)));
+        if (!empty($and)) {
             $query .= 'AND ' . $and;
         }
-        $customers = DB::select($query,array_merge([  $client_id, $date_val,  $start_time,  $end_time], $params));
+        $customers = DB::select($query, array_merge([$client_id, $date_val,  $start_time,  $end_time], $params));
 
         return $customers;
     }
@@ -490,29 +490,29 @@ class Customer extends Model
         $clientf = '';
         $categoryf = '';
         $params = array();
-        if(isset($filter['city'])){
-            $cityf = 'customer_city IN (?'.str_repeat(",?", count($filter["city"])-1).')';
+        if (isset($filter['city'])) {
+            $cityf = 'customer_city IN (?' . str_repeat(",?", count($filter["city"]) - 1) . ')';
             $params = array_merge($params, $filter['city']);
         }
-        if(isset($filter['client'])){
-            $clientf = 'customers.client_id IN (?'.str_repeat(",?", count($filter["client"])-1).')';
+        if (isset($filter['client'])) {
+            $clientf = 'customers.client_id IN (?' . str_repeat(",?", count($filter["client"]) - 1) . ')';
             $params = array_merge($params, $filter['client']);
         }
-        if(isset($filter['category'])){
-            $categoryf = 'client_category IN (?'.str_repeat(",?", count($filter["category"])-1).')';
+        if (isset($filter['category'])) {
+            $categoryf = 'client_category IN (?' . str_repeat(",?", count($filter["category"]) - 1) . ')';
             $params = array_merge($params, $filter['category']);
         }
-        $and =join(" AND ",array_filter(array($cityf, $clientf, $categoryf)));
-        if(!empty($and)){
+        $and = join(" AND ", array_filter(array($cityf, $clientf, $categoryf)));
+        if (!empty($and)) {
             $query .= 'AND ' . $and;
         }
-        $customers = DB::select($query,array_merge([$date_now], $params));
+        $customers = DB::select($query, array_merge([$date_now], $params));
 
         return $customers;
     }
 
 
-    public function getlead_client_month_admin($month,$year, $filter = array([]))
+    public function getlead_client_month_admin($month, $year, $filter = array([]))
     {
         $query = '
 
@@ -549,23 +549,23 @@ class Customer extends Model
         $clientf = '';
         $categoryf = '';
         $params = array();
-        if(isset($filter['city'])){
-            $cityf = 'customer_city IN (?'.str_repeat(",?", count($filter["city"])-1).')';
+        if (isset($filter['city'])) {
+            $cityf = 'customer_city IN (?' . str_repeat(",?", count($filter["city"]) - 1) . ')';
             $params = array_merge($params, $filter['city']);
         }
-        if(isset($filter['client'])){
-            $clientf = 'customers.client_id IN (?'.str_repeat(",?", count($filter["client"])-1).')';
+        if (isset($filter['client'])) {
+            $clientf = 'customers.client_id IN (?' . str_repeat(",?", count($filter["client"]) - 1) . ')';
             $params = array_merge($params, $filter['client']);
         }
-        if(isset($filter['category'])){
-            $categoryf = 'client_category IN (?'.str_repeat(",?", count($filter["category"])-1).')';
+        if (isset($filter['category'])) {
+            $categoryf = 'client_category IN (?' . str_repeat(",?", count($filter["category"]) - 1) . ')';
             $params = array_merge($params, $filter['category']);
         }
-        $and =join(" AND ",array_filter(array($cityf, $clientf, $categoryf)));
-        if(!empty($and)){
+        $and = join(" AND ", array_filter(array($cityf, $clientf, $categoryf)));
+        if (!empty($and)) {
             $query .= 'AND ' . $and;
         }
-        $customers = DB::select($query,array_merge([  $month,  $year], $params));
+        $customers = DB::select($query, array_merge([$month,  $year], $params));
 
         return $customers;
     }
@@ -607,28 +607,28 @@ class Customer extends Model
         $clientf = '';
         $categoryf = '';
         $params = array();
-        if(isset($filter['city'])){
-            $cityf = 'customer_city IN (?'.str_repeat(",?", count($filter["city"])-1).')';
+        if (isset($filter['city'])) {
+            $cityf = 'customer_city IN (?' . str_repeat(",?", count($filter["city"]) - 1) . ')';
             $params = array_merge($params, $filter['city']);
         }
-        if(isset($filter['client'])){
-            $clientf = 'customers.client_id IN (?'.str_repeat(",?", count($filter["client"])-1).')';
+        if (isset($filter['client'])) {
+            $clientf = 'customers.client_id IN (?' . str_repeat(",?", count($filter["client"]) - 1) . ')';
             $params = array_merge($params, $filter['client']);
         }
-        if(isset($filter['category'])){
-            $categoryf = 'client_category IN (?'.str_repeat(",?", count($filter["category"])-1).')';
+        if (isset($filter['category'])) {
+            $categoryf = 'client_category IN (?' . str_repeat(",?", count($filter["category"]) - 1) . ')';
             $params = array_merge($params, $filter['category']);
         }
-        $and =join(" AND ",array_filter(array($cityf, $clientf, $categoryf)));
-        if(!empty($and)){
+        $and = join(" AND ", array_filter(array($cityf, $clientf, $categoryf)));
+        if (!empty($and)) {
             $query .= 'AND ' . $and;
         }
-        $customers = DB::select($query,array_merge([  $year], $params));
+        $customers = DB::select($query, array_merge([$year], $params));
 
         return $customers;
     }
 
-     public function getlead_client_all_admin($filter = array([]))
+    public function getlead_client_all_admin($filter = array([]))
     {
         $query = '
 
@@ -664,20 +664,20 @@ class Customer extends Model
         $clientf = '';
         $categoryf = '';
         $params = array();
-        if(isset($filter['city'])){
-            $cityf = 'customer_city IN (?'.str_repeat(",?", count($filter["city"])-1).')';
+        if (isset($filter['city'])) {
+            $cityf = 'customer_city IN (?' . str_repeat(",?", count($filter["city"]) - 1) . ')';
             $params = array_merge($params, $filter['city']);
         }
-        if(isset($filter['client'])){
-            $clientf = 'customers.client_id IN (?'.str_repeat(",?", count($filter["client"])-1).')';
+        if (isset($filter['client'])) {
+            $clientf = 'customers.client_id IN (?' . str_repeat(",?", count($filter["client"]) - 1) . ')';
             $params = array_merge($params, $filter['client']);
         }
-        if(isset($filter['category'])){
-            $categoryf = 'client_category IN (?'.str_repeat(",?", count($filter["category"])-1).')';
+        if (isset($filter['category'])) {
+            $categoryf = 'client_category IN (?' . str_repeat(",?", count($filter["category"]) - 1) . ')';
             $params = array_merge($params, $filter['category']);
         }
-        $and =join(" AND ",array_filter(array($cityf, $clientf, $categoryf)));
-        if(!empty($and)){
+        $and = join(" AND ", array_filter(array($cityf, $clientf, $categoryf)));
+        if (!empty($and)) {
             $query .= 'WHERE ' . $and;
         }
         $customers = DB::select($query, $params);
@@ -686,7 +686,7 @@ class Customer extends Model
     }
 
 
-     public function getlead_client_all_admin_data(  $filter = array([]))
+    public function getlead_client_all_admin_data($filter = array([]))
     {
         $query = '
 
@@ -715,20 +715,20 @@ class Customer extends Model
         $clientf = '';
         $categoryf = '';
         $params = array();
-        if(isset($filter['city'])){
-            $cityf = 'customer_city IN (?'.str_repeat(",?", count($filter["city"])-1).')';
+        if (isset($filter['city'])) {
+            $cityf = 'customer_city IN (?' . str_repeat(",?", count($filter["city"]) - 1) . ')';
             $params = array_merge($params, $filter['city']);
         }
-        if(isset($filter['client'])){
-            $clientf = 'customers.client_id IN (?'.str_repeat(",?", count($filter["client"])-1).')';
+        if (isset($filter['client'])) {
+            $clientf = 'customers.client_id IN (?' . str_repeat(",?", count($filter["client"]) - 1) . ')';
             $params = array_merge($params, $filter['client']);
         }
-        if(isset($filter['category'])){
-            $categoryf = 'client_category IN (?'.str_repeat(",?", count($filter["category"])-1).')';
+        if (isset($filter['category'])) {
+            $categoryf = 'client_category IN (?' . str_repeat(",?", count($filter["category"]) - 1) . ')';
             $params = array_merge($params, $filter['category']);
         }
-        $and =join(" AND ",array_filter(array($cityf, $clientf, $categoryf)));
-        if(!empty($and)){
+        $and = join(" AND ", array_filter(array($cityf, $clientf, $categoryf)));
+        if (!empty($and)) {
             $query .= 'WHERE ' . $and;
         }
         $customers = DB::select($query, $params);
@@ -736,7 +736,7 @@ class Customer extends Model
         return $customers;
     }
 
-     public function getlead_client_all_admin_manage($filter = array([]))
+    public function getlead_client_all_admin_manage($filter = array([]))
     {
         $query = '
 
@@ -762,20 +762,20 @@ class Customer extends Model
         $clientf = '';
         $categoryf = '';
         $params = array();
-        if(isset($filter['city'])){
-            $cityf = 'customer_city IN (?'.str_repeat(",?", count($filter["city"])-1).')';
+        if (isset($filter['city'])) {
+            $cityf = 'customer_city IN (?' . str_repeat(",?", count($filter["city"]) - 1) . ')';
             $params = array_merge($params, $filter['city']);
         }
-        if(isset($filter['client'])){
-            $clientf = 'customers.client_id IN (?'.str_repeat(",?", count($filter["client"])-1).')';
+        if (isset($filter['client'])) {
+            $clientf = 'customers.client_id IN (?' . str_repeat(",?", count($filter["client"]) - 1) . ')';
             $params = array_merge($params, $filter['client']);
         }
-        if(isset($filter['category'])){
-            $categoryf = 'client_category IN (?'.str_repeat(",?", count($filter["category"])-1).')';
+        if (isset($filter['category'])) {
+            $categoryf = 'client_category IN (?' . str_repeat(",?", count($filter["category"]) - 1) . ')';
             $params = array_merge($params, $filter['category']);
         }
-        $and =join(" AND ",array_filter(array($cityf, $clientf, $categoryf)));
-        if(!empty($and)){
+        $and = join(" AND ", array_filter(array($cityf, $clientf, $categoryf)));
+        if (!empty($and)) {
             $query .= 'WHERE ' . $and;
         }
         $customers = DB::select($query, $params);
@@ -783,9 +783,9 @@ class Customer extends Model
     }
 
 
-//=======================================================
+    //=======================================================
     //shift
-    public function normalshift($client_id,$date_val,$start_time,$end_time,$user_id)
+    public function normalshift($client_id, $date_val, $start_time, $end_time, $user_id)
     {
         $customers = DB::select('
 
@@ -817,14 +817,14 @@ class Customer extends Model
             JOIN client_categories ON client_categories.client_categories_id = customers.client_category
             JOIN clients ON clients.client_id = customers.client_id
             WHERE customers.client_id = :client_id AND customers.customer_date = :date_val AND customers.customer_time >= :start_time AND customers.customer_time <= :end_time  AND customers.user_id = :user_id
-            ',['client_id' => $client_id,'date_val' => $date_val,'start_time' => $start_time,'end_time' => $end_time,'user_id' => $user_id]);
+            ', ['client_id' => $client_id, 'date_val' => $date_val, 'start_time' => $start_time, 'end_time' => $end_time, 'user_id' => $user_id]);
 
 
         return $customers;
     }
 
 
-    public function nightshift($client_id,$date_val,$date_end,$start_time,$end_time,$user_id)
+    public function nightshift($client_id, $date_val, $date_end, $start_time, $end_time, $user_id)
     {
         $customers = DB::select('
 
@@ -856,7 +856,7 @@ class Customer extends Model
             JOIN client_categories ON client_categories.client_categories_id = customers.client_category
             JOIN clients ON clients.client_id = customers.client_id
             WHERE customers.client_id = :client_id AND customers.customer_date >= :date_val AND customers.customer_date <= :date_end AND customers.customer_time >= :start_time AND customers.customer_time <= :end_time  AND customers.user_id = :user_id
-            ',['client_id' => $client_id,'date_val' => $date_val,'start_time' => $start_time,'end_time' => $end_time,'user_id' => $user_id,'date_end' => $date_end]);
+            ', ['client_id' => $client_id, 'date_val' => $date_val, 'start_time' => $start_time, 'end_time' => $end_time, 'user_id' => $user_id, 'date_end' => $date_end]);
 
 
         return $customers;
@@ -865,7 +865,7 @@ class Customer extends Model
 
     //all clients shift
 
-    public function normalallclientsreport($date_val,$start_time,$end_time,$user_id)
+    public function normalallclientsreport($date_val, $start_time, $end_time, $user_id)
     {
         $customers = DB::select('
 
@@ -897,13 +897,13 @@ class Customer extends Model
             JOIN client_categories ON client_categories.client_categories_id = customers.client_category
             JOIN clients ON clients.client_id = customers.client_id
             WHERE customers.user_id = :user_id AND customers.customer_date = :date_val AND customers.customer_time >= :start_time AND customers.customer_time <= :end_time 
-            ',['user_id' => $user_id,'date_val' => $date_val,'start_time' => $start_time,'end_time' => $end_time]);
+            ', ['user_id' => $user_id, 'date_val' => $date_val, 'start_time' => $start_time, 'end_time' => $end_time]);
 
 
         return $customers;
     }
 
-    public function nightallclientsreport($date_val,$end_date,$start_time,$end_time,$user_id)
+    public function nightallclientsreport($date_val, $end_date, $start_time, $end_time, $user_id)
     {
         $customers = DB::select('
 
@@ -935,7 +935,7 @@ class Customer extends Model
             JOIN client_categories ON client_categories.client_categories_id = customers.client_category
             JOIN clients ON clients.client_id = customers.client_id
             WHERE customers.user_id = :user_id AND customers.customer_date >= :date_val AND customers.customer_date <= :end_date AND customers.customer_time >= :start_time AND customers.customer_time <= :end_time 
-            ',['user_id' => $user_id,'date_val' => $date_val,'end_date' => $end_date,'start_time' => $start_time,'end_time' => $end_time]);
+            ', ['user_id' => $user_id, 'date_val' => $date_val, 'end_date' => $end_date, 'start_time' => $start_time, 'end_time' => $end_time]);
 
 
         return $customers;
@@ -943,7 +943,7 @@ class Customer extends Model
 
 
     //customer reports call on actions
-    public function getlead_client_actions($client_id,$date_now,$status, $filter = array([]))
+    public function getlead_client_actions($client_id, $date_now, $status, $filter = array([]))
     {
         $query = '
 
@@ -983,25 +983,25 @@ class Customer extends Model
         $clientf = '';
         $categoryf = '';
         $params = array();
-        if(isset($filter['city'])){
-            $cityf = 'customer_city IN (?'.str_repeat(",?", count($filter["city"])-1).')';
+        if (isset($filter['city'])) {
+            $cityf = 'customer_city IN (?' . str_repeat(",?", count($filter["city"]) - 1) . ')';
             $params = array_merge($params, $filter['city']);
         }
-        if(isset($filter['category'])){
-            $categoryf = 'client_category IN (?'.str_repeat(",?", count($filter["category"])-1).')';
+        if (isset($filter['category'])) {
+            $categoryf = 'client_category IN (?' . str_repeat(",?", count($filter["category"]) - 1) . ')';
             $params = array_merge($params, $filter['category']);
         }
-        $and =join(" AND ",array_filter(array($cityf, $clientf, $categoryf)));
-        if(!empty($and)){
+        $and = join(" AND ", array_filter(array($cityf, $clientf, $categoryf)));
+        if (!empty($and)) {
             $query .= 'AND ' . $and;
         }
-        $customers = DB::select($query,array_merge([  $client_id,  $date_now,  $status], $params));
+        $customers = DB::select($query, array_merge([$client_id,  $date_now,  $status], $params));
 
         return $customers;
     }
 
 
-    public function getlead_client_month_actions($client_id,$month,$year,$status, $filter = array([]))
+    public function getlead_client_month_actions($client_id, $month, $year, $status, $filter = array([]))
     {
         $query = '
 
@@ -1041,25 +1041,25 @@ class Customer extends Model
         $clientf = '';
         $categoryf = '';
         $params = array();
-        if(isset($filter['city'])){
-            $cityf = 'customer_city IN (?'.str_repeat(",?", count($filter["city"])-1).')';
+        if (isset($filter['city'])) {
+            $cityf = 'customer_city IN (?' . str_repeat(",?", count($filter["city"]) - 1) . ')';
             $params = array_merge($params, $filter['city']);
         }
-        if(isset($filter['category'])){
-            $categoryf = 'client_category IN (?'.str_repeat(",?", count($filter["category"])-1).')';
+        if (isset($filter['category'])) {
+            $categoryf = 'client_category IN (?' . str_repeat(",?", count($filter["category"]) - 1) . ')';
             $params = array_merge($params, $filter['category']);
         }
-        $and =join(" AND ",array_filter(array($cityf, $clientf, $categoryf)));
-        if(!empty($and)){
+        $and = join(" AND ", array_filter(array($cityf, $clientf, $categoryf)));
+        if (!empty($and)) {
             $query .= 'AND ' . $and;
         }
-        $customers = DB::select($query,array_merge([  $client_id,  $month, $year, $status], $params));
+        $customers = DB::select($query, array_merge([$client_id,  $month, $year, $status], $params));
 
         return $customers;
     }
 
 
-     public function getlead_client_year_action($client_id,$year,$status, $filter = array([]))
+    public function getlead_client_year_action($client_id, $year, $status, $filter = array([]))
     {
         $query = '
 
@@ -1099,31 +1099,31 @@ class Customer extends Model
         $clientf = '';
         $categoryf = '';
         $params = array();
-        if(isset($filter['city'])){
-            $cityf = 'customer_city IN (?'.str_repeat(",?", count($filter["city"])-1).')';
+        if (isset($filter['city'])) {
+            $cityf = 'customer_city IN (?' . str_repeat(",?", count($filter["city"]) - 1) . ')';
             $params = array_merge($params, $filter['city']);
         }
-        if(isset($filter['category'])){
-            $categoryf = 'client_category IN (?'.str_repeat(",?", count($filter["category"])-1).')';
+        if (isset($filter['category'])) {
+            $categoryf = 'client_category IN (?' . str_repeat(",?", count($filter["category"]) - 1) . ')';
             $params = array_merge($params, $filter['category']);
         }
-        $and =join(" AND ",array_filter(array($cityf, $clientf, $categoryf)));
-        if(!empty($and)){
+        $and = join(" AND ", array_filter(array($cityf, $clientf, $categoryf)));
+        if (!empty($and)) {
             $query .= 'AND ' . $and;
         }
-        $customers = DB::select($query,array_merge([  $client_id,  $year,  $status], $params));
+        $customers = DB::select($query, array_merge([$client_id,  $year,  $status], $params));
 
         return $customers;
     }
 
     //actions
-    public function changestatus($customer_id,$status)
+    public function changestatus($customer_id, $status)
     {
         $customer = DB::statement('
             UPDATE customers
             SET customer_status = :status
             WHERE customer_id = :customer_id
-            ',['customer_id' => $customer_id,'status' => $status]);
+            ', ['customer_id' => $customer_id, 'status' => $status]);
 
 
         return $customer;
@@ -1135,7 +1135,7 @@ class Customer extends Model
         $customer = DB::delete('
             DELETE FROM customers
             WHERE customer_id = ?
-            ',array($customer_id));
+            ', array($customer_id));
 
 
 
@@ -1158,7 +1158,7 @@ class Customer extends Model
             JOIN client_categories ON client_categories.client_categories_id = customers.client_category
             JOIN clients ON clients.client_id = customers.client_id
             WHERE customers.customer_phone = ?
-            ',array($number));
+            ', array($number));
 
 
         return $customer;
@@ -1177,19 +1177,25 @@ class Customer extends Model
                 client_categories.client_categories_name,
                 customers.customer_message,
                 cities.city_name,
-                customers.client_id
+                customers.client_id,
+            CASE
+                WHEN customers.customer_status = 0 THEN "No.Action" 
+                WHEN customers.customer_status = 1 THEN "Done"
+                WHEN customers.customer_status = 2 THEN "On Hold"
+                WHEN customers.customer_status = 3 THEN "Deal" 
+            END AS "status" 
             FROM customers
             JOIN client_categories ON client_categories.client_categories_id = customers.client_category
             JOIN cities ON cities.city_id = customers.customer_city
             JOIN clients ON clients.client_id = customers.client_id
             WHERE customers.customer_id = ?
-            ',array($customer_id));
+            ', array($customer_id));
 
         return $customer;
     }
 
 
-    public function updatelead(Request $request,$customer_id)
+    public function updatelead(Request $request, $customer_id)
     {
         $customer = DB::statement('
 
@@ -1204,16 +1210,16 @@ class Customer extends Model
 
 
 
-            ',array(
+            ', array(
 
-                $request->input('var1'),
-                $request->input('var2'),
-                $request->input('var3'),
-                $request->input('var4'),
-                $request->input('var5'),
-                $request->input('var6'),
-                $customer_id
-            ));
+            $request->input('var1'),
+            $request->input('var2'),
+            $request->input('var3'),
+            $request->input('var4'),
+            $request->input('var5'),
+            $request->input('var6'),
+            $customer_id
+        ));
 
 
         return $customer;

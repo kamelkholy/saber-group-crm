@@ -1,4 +1,6 @@
 <!-- ========== Left Sidebar Start ========== -->
+
+
 <div class="left side-menu">
 
     <!-- LOGO -->
@@ -6,8 +8,7 @@
         <div class="">
             <!--<a href="index.html" class="logo text-center">Fonik</a>-->
             <a href="index.html" class="logo">
-                <img style="padding-top: 20px;padding-bottom: 10px" width="90%" src="{{url('/public/pic/logo.png')}}"
-                    height="90px" alt="logo"></a>
+                <img style="padding-top: 20px;padding-bottom: 10px" width="90%" src="{{url('/public/pic/logo.png')}}" height="90px" alt="logo"></a>
         </div>
     </div>
 
@@ -22,8 +23,6 @@
                         </span></a>
                 </li>
 
->
-                
                 <li class="has_sub">
                     <a href="javascript:void(0);" class="waves-effect"><i class="fa fa-file "></i> Static<span> Reports
                             <span class="float-right"><i class="mdi mdi-chevron-right"></i></span></span> </a>
@@ -79,7 +78,7 @@
                     </ul>
                 </li>
 
-            
+
             </ul>
         </div>
         <div class="clearfix"></div>
@@ -100,24 +99,33 @@
 
 
                 <ul class="list-inline float-right mb-0">
-                  
+
                     <!-- Fullscreen -->
                     <li class="list-inline-item dropdown notification-list hidden-xs-down">
                         <a class="nav-link waves-effect" href="#" id="btn-fullscreen">
                             <i class="mdi mdi-fullscreen noti-icon"></i>
                         </a>
                     </li>
-                    
+
+                    <li class="list-inline-item dropdown ">
+                        <a class="nav-link dropdown-toggle arrow-none waves-effect nav-user" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                            <i class="fa fa-bell"></i>
+                            (<span id="notif-count" class="notif-count">0</span>)
+                        </a>
+
+                        <div id="notifications" class="dropdown-menu">
+                            <!-- <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" style="text-align: center" href="#">View All</a> -->
+                        </div>
+                    </li>
                     <!-- User-->
                     <li class="list-inline-item dropdown notification-list">
-                        <a class="nav-link dropdown-toggle arrow-none waves-effect nav-user" data-toggle="dropdown"
-                            href="#" role="button" aria-haspopup="false" aria-expanded="false">
+                        <a class="nav-link dropdown-toggle arrow-none waves-effect nav-user" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
                             <img src="{{url('/public/pic/user.png')}}" alt="user" class="rounded-circle">
                             {{Auth::user()->name}}
                         </a>
                         <div class="dropdown-menu dropdown-menu-right profile-dropdown ">
-                            <a class="dropdown-item" href="{{url('/logout')}}"><i
-                                    class="dripicons-exit text-muted"></i> Logout</a>
+                            <a class="dropdown-item" href="{{url('/logout')}}"><i class="dripicons-exit text-muted"></i> Logout</a>
                         </div>
                     </li>
                 </ul>
@@ -134,7 +142,7 @@
                     </li>
                     <li class="hide-phone list-inline-item app-search">
                         <h3 class="page-title">Dashboard</h3>
-                        </li>
+                    </li>
                 </ul>
 
                 <div class="clearfix"></div>

@@ -62,6 +62,32 @@ class User extends Authenticatable
 
         return $user;
     }
+    public function getClientUsers($clientId)
+    {   
+        $users = User::where('user_client', $clientId)
+                    ->where('user_type','=', 4)
+                    ->get();
+        // $user = DB::select('
+
+        //     SELECT
+        //         id AS "ID",name AS "User Name",email AS "E-mail",
+        //     CASE
+        //         WHEN user_type  = 1 THEN "Admin"
+        //         WHEN user_type  = 2 THEN "Client"
+        //         WHEN user_type  = 3 THEN "Moderation"
+        //         WHEN user_type  = 4 THEN "Sales"
+        //     END AS "Account Type",
+        //     CASE
+        //         WHEN user_status = 0 THEN "Active"
+        //         WHEN user_status = 1 THEN "Not Active"
+        //     END AS "Status"
+        //     FROM users
+        //     WHERE users.user_client = ?
+        //     AND users.user_type = 4
+        //     ',[$clientId]);
+
+        return $users;
+    }
 
 
 

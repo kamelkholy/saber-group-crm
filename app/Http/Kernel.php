@@ -67,5 +67,6 @@ class Kernel extends HttpKernel
         'Client' => \App\Http\Middleware\Client::class,
         'Moderation' => \App\Http\Middleware\Moderation::class,
         'Sales' => \App\Http\Middleware\Sales::class,
+        'MarkNotificationAsRead' => \App\Http\Middleware\MarkNotificationAsRead::class,
     ];
 }
